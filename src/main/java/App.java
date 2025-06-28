@@ -2,9 +2,8 @@ import java.util.*;
 
 public class App {
     public static void main(String[] args) {
-        Order order = new Order();
-        order.setClientName("João");
-        order.setClientEmail("joao@email.com");
+        Client client = new Client("João", "joao@email.com");
+        Order order = new Order(client);
         order.addItem("Notebook", 1, 3500.0);
         order.addItem("Mouse", 2, 80.0);
         order.printInvoice();
@@ -13,17 +12,12 @@ public class App {
 }
 
 class Order {
-    private String clientName;
-    private String clientEmail;
+    private Client client;
     private List<Item> items = new ArrayList<>();
     private double discountRate = 0.1;
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
-    public void setClientEmail(String clientEmail) {
-        this.clientEmail = clientEmail;
+    public Order(Client client) {
+        this.client = client;
     }
 
     public void addItem(String product, int quantity, double price) {
@@ -32,7 +26,7 @@ class Order {
 
     public void printInvoice() {
         double total = 0;
-        System.out.println("Cliente: " + clientName);
+        System.out.println("Cliente: " + client.getName());
         for (Item item : items) {
             System.out.println(item.getQuantity() + "x " + item.getProduct() + " - R$" + item.getPrice());
             total += item.getTotal();
@@ -43,7 +37,7 @@ class Order {
     }
 
     public void sendEmail() {
-        EmailService.sendEmail(clientEmail, "Pedido recebido! Obrigado pela compra.");
+        EmailService.sendEmail(client.getEmail(), "Pedido recebido! Obrigado pela compra.");
     }
 }
 
