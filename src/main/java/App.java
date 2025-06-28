@@ -18,15 +18,34 @@ class Order {
     private DiscountPolicy discountPolicy;
 
     public Order(Client client, DiscountPolicy discountPolicy) {
+        if (client == null) {
+            throw new IllegalArgumentException("Cliente não pode ser nulo");
+        }
+        if (discountPolicy == null) {
+            throw new IllegalArgumentException("Política de desconto não pode ser nula");
+        }
         this.client = client;
         this.discountPolicy = discountPolicy;
     }
 
     public void addItem(String product, int quantity, double price) {
+        if (product == null || product.trim().isEmpty()) {
+            throw new IllegalArgumentException("Produto não pode ser nulo ou vazio");
+        }
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero");
+        }
+        if (price < 0) {
+            throw new IllegalArgumentException("Preço não pode ser negativo");
+        }
         items.add(new Item(product, quantity, price));
     }
 
     public void printInvoice() {
+        if (items.isEmpty()) {
+            System.out.println("Pedido vazio - nenhum item para imprimir");
+            return;
+        }
         printInvoiceHeader();
         printInvoiceItems();
         printInvoiceSummary();
@@ -72,6 +91,12 @@ class Order {
 
 class EmailService {
     public static void sendEmail(String to, String message) {
+        if (to == null || to.trim().isEmpty()) {
+            throw new IllegalArgumentException("Destinatário do e-mail não pode ser nulo ou vazio");
+        }
+        if (message == null || message.trim().isEmpty()) {
+            throw new IllegalArgumentException("Mensagem do e-mail não pode ser nula ou vazia");
+        }
         System.out.println("Enviando e-mail para " + to + ": " + message);
     }
 }
