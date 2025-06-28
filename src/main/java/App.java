@@ -3,7 +3,8 @@ import java.util.*;
 public class App {
     public static void main(String[] args) {
         Client client = new Client("João", "joao@email.com");
-        Order order = new Order(client);
+        DiscountPolicy discountPolicy = new DiscountPolicy(0.1);
+        Order order = new Order(client, discountPolicy);
         order.addItem("Notebook", 1, 3500.0);
         order.addItem("Mouse", 2, 80.0);
         order.printInvoice();
@@ -14,10 +15,11 @@ public class App {
 class Order {
     private Client client;
     private List<Item> items = new ArrayList<>();
-    private double discountRate = 0.1;
+    private DiscountPolicy discountPolicy;
 
-    public Order(Client client) {
+    public Order(Client client, DiscountPolicy discountPolicy) {
         this.client = client;
+        this.discountPolicy = discountPolicy;
     }
 
     public void addItem(String product, int quantity, double price) {
@@ -31,8 +33,8 @@ class Order {
             System.out.println(item.getQuantity() + "x " + item.getProduct() + " - R$" + item.getPrice());
         }
         System.out.println("Subtotal: R$" + total);
-        System.out.println("Desconto: R$" + calculateDiscount(total));
-        System.out.println("Total final: R$" + calculateFinalTotal(total));
+        System.out.println("Desconto: R$" + discountPolicy.calculateDiscount(total));
+        System.out.println("Total final: R$" + discountPolicy.calculateFinalAmount(total));
     }
 
     public void sendEmail() {
@@ -51,14 +53,6 @@ class Order {
         return total;
     }
 
-    private double calculateDiscount(double total) {
-        return total * discountRate;
-    }
-
-    private double calculateFinalTotal(double total) {
-        return total * (1 - discountRate);
-    }
-
     private String generateOrderConfirmationMessage() {
         return "Pedido recebido! Obrigado pela compra.";
     }
@@ -71,7 +65,17 @@ class EmailService {
 }
 
 class DiscountPolicy {
-    public static double calculateDiscount(double amount, double rate) {
+    private double rate;
+
+    public DiscountPolicy(double rate) {
+        this.rate = rate;
+    }
+
+    public double calculateDiscount(double amount) {
         return amount * rate;
+    }
+
+    public double calculateFinalAmount(double amount) {
+        return amount * (1 - rate);
     }
 }
