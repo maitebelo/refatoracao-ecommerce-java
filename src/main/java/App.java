@@ -3,33 +3,39 @@ import java.util.*;
 public class App {
     public static void main(String[] args) {
         Order order = new Order();
-        order.clientName = "João";
-        order.clientEmail = "joao@email.com";
-        order.products.add("Notebook");
-        order.quantities.add(1);
-        order.prices.add(3500.0);
-        order.products.add("Mouse");
-        order.quantities.add(2);
-        order.prices.add(80.0);
+        order.setClientName("João");
+        order.setClientEmail("joao@email.com");
+        order.addItem("Notebook", 1, 3500.0);
+        order.addItem("Mouse", 2, 80.0);
         order.printInvoice();
         order.sendEmail();
     }
 }
 
 class Order {
-    public String clientName;
-    public String clientEmail;
-    public List products = new ArrayList<>();
-    public List quantities = new ArrayList<>();
-    public List prices = new ArrayList<>();
-    public double discountRate = 0.1;
+    private String clientName;
+    private String clientEmail;
+    private List<Item> items = new ArrayList<>();
+    private double discountRate = 0.1;
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public void setClientEmail(String clientEmail) {
+        this.clientEmail = clientEmail;
+    }
+
+    public void addItem(String product, int quantity, double price) {
+        items.add(new Item(product, quantity, price));
+    }
 
     public void printInvoice() {
         double total = 0;
         System.out.println("Cliente: " + clientName);
-        for (int i = 0; i < products.size(); i++) {
-            System.out.println(quantities.get(i) + "x " + products.get(i) + " - R$" + prices.get(i));
-            total += prices.get(i) * quantities.get(i);
+        for (Item item : items) {
+            System.out.println(item.getQuantity() + "x " + item.getProduct() + " - R$" + item.getPrice());
+            total += item.getTotal();
         }
         System.out.println("Subtotal: R$" + total);
         System.out.println("Desconto: R$" + (total * discountRate));
