@@ -37,6 +37,10 @@ class Order {
     }
 
     public void sendEmail() {
+        sendOrderConfirmationEmail();
+    }
+
+    private void sendOrderConfirmationEmail() {
         EmailService.sendEmail(client.getEmail(), "Pedido recebido! Obrigado pela compra.");
     }
 }
