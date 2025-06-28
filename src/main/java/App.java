@@ -25,15 +25,14 @@ class Order {
     }
 
     public void printInvoice() {
-        double total = 0;
+        double total = calculateTotal();
         System.out.println("Cliente: " + client.getName());
         for (Item item : items) {
             System.out.println(item.getQuantity() + "x " + item.getProduct() + " - R$" + item.getPrice());
-            total += item.getTotal();
         }
         System.out.println("Subtotal: R$" + total);
-        System.out.println("Desconto: R$" + (total * discountRate));
-        System.out.println("Total final: R$" + (total * (1 - discountRate)));
+        System.out.println("Desconto: R$" + calculateDiscount(total));
+        System.out.println("Total final: R$" + calculateFinalTotal(total));
     }
 
     public void sendEmail() {
@@ -41,7 +40,27 @@ class Order {
     }
 
     private void sendOrderConfirmationEmail() {
-        EmailService.sendEmail(client.getEmail(), "Pedido recebido! Obrigado pela compra.");
+        EmailService.sendEmail(client.getEmail(), generateOrderConfirmationMessage());
+    }
+
+    private double calculateTotal() {
+        double total = 0;
+        for (Item item : items) {
+            total += item.getTotal();
+        }
+        return total;
+    }
+
+    private double calculateDiscount(double total) {
+        return total * discountRate;
+    }
+
+    private double calculateFinalTotal(double total) {
+        return total * (1 - discountRate);
+    }
+
+    private String generateOrderConfirmationMessage() {
+        return "Pedido recebido! Obrigado pela compra.";
     }
 }
 
