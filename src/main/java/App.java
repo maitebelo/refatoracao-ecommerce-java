@@ -27,18 +27,30 @@ class Order {
     }
 
     public void printInvoice() {
-        double total = calculateTotal();
-        System.out.println("Cliente: " + client.getName());
-        for (Item item : items) {
-            System.out.println(item.getQuantity() + "x " + item.getProduct() + " - R$" + item.getPrice());
-        }
-        System.out.println("Subtotal: R$" + total);
-        System.out.println("Desconto: R$" + discountPolicy.calculateDiscount(total));
-        System.out.println("Total final: R$" + discountPolicy.calculateFinalAmount(total));
+        printInvoiceHeader();
+        printInvoiceItems();
+        printInvoiceSummary();
     }
 
     public void sendEmail() {
         sendOrderConfirmationEmail();
+    }
+
+    private void printInvoiceHeader() {
+        System.out.println("Cliente: " + client.getName());
+    }
+
+    private void printInvoiceItems() {
+        for (Item item : items) {
+            System.out.println(item.getQuantity() + "x " + item.getProduct() + " - R$" + item.getPrice());
+        }
+    }
+
+    private void printInvoiceSummary() {
+        double total = calculateTotal();
+        System.out.println("Subtotal: R$" + total);
+        System.out.println("Desconto: R$" + discountPolicy.calculateDiscount(total));
+        System.out.println("Total final: R$" + discountPolicy.calculateFinalAmount(total));
     }
 
     private void sendOrderConfirmationEmail() {
